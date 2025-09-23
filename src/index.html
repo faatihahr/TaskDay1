@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="src/style.css">
+    <title>Digital Art Portfolio</title>
+</head>
+<body>
+    <header>
+        <h1>My Digital Art Portofolio</h1>
+        <p>Showcasing my aesthetic creations </p>
+        <nav>
+            <ul class="navbar">
+                <li><a href="#" id="home-link">Home</a></li>
+                <li><a href="#" id="projects-link">My Projects</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main id="portfolio">
+        <!-- Art cards will be injected here -->
+    </main>
+    <section id="add-art-section" style="display:none;">
+        <h2>Add New Art</h2>
+        <form id="add-art-form">
+            <label for="art-title">Title:</label>
+            <input type="text" id="art-title" name="art-title" required><br>
+            <label for="art-image">Image:</label>
+            <input type="file" id="art-image" name="art-image" accept="image/*" required><br>
+            <label for="art-description">Description:</label>
+            <textarea id="art-description" name="art-description" required></textarea><br>
+            <button type="submit">Add Art</button>
+        </form>
+    </section>
+    <footer>
+        &copy; 2024 Faatihah. All rights reserved.
+    </footer>
+    <script src="scripts/main.js"></script>
+</body>
+</html>

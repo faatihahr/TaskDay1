@@ -1,0 +1,215 @@
+:root {
+            --primary: #ffd1dc;
+            --accent: #fff0f5;
+            --text: #333;
+            --card-bg: #fff;
+            --shadow: 0 4px 16px rgba(0,0,0,0.07);
+        }
+        body {
+            margin: 0;
+            font-family: 'Raleway', 'Source Sans Pro', 'Ranade', sans-serif;
+            background: var(--primary);
+            color: var(--text);
+        }
+        header {
+            background: var(--accent);
+            padding: 2rem 0 1rem 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            color: #e75480;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.2rem;
+            color: #a05278;
+        }
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .art-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .art-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(231,84,128,0.12);
+        }
+        .art-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: var(--primary);
+        }
+        .art-info {
+            padding: 1rem;
+            text-align: center;
+        }
+        .art-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #e75480;
+            margin: 0 0 0.5rem 0;
+        }
+        .art-desc {
+            font-size: 0.95rem;
+            color: #555;
+            margin: 0;
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem 0;
+            color: #a05278;
+            font-size: 1rem;
+            background: var(--accent);
+            margin-top: 2rem;
+        }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.5rem; }
+            main { gap: 1rem; }
+        }
+/* Navigation Bar Styles */
+.navbar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0 0;
+    background: none;
+}
+
+.navbar li {
+    display: inline;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #e75480;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.navbar a.active,
+.navbar a:hover {
+    background: #e75480;
+    color: #fff;
+}
+
+/* Add Art Section (My Projects Page) */
+#add-art-section {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem;
+    display: block;
+}
+
+#add-art-section h2 {
+    text-align: center;
+    color: #e75480;
+    margin-bottom: 1.5rem;
+}
+
+#add-art-form label {
+    display: block;
+    margin: 1rem 0 0.3rem 0;
+    font-weight: 500;
+    color: #a05278;
+}
+
+#add-art-form input,
+#add-art-form textarea {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid #ffd1dc;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    margin-right: 0.5rem; /* Add space on the right side */
+    font-size: 1rem;
+    background: #fff0f5;
+    color: var(--text);
+    resize: vertical;
+}
+
+#add-art-form button {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    background: #e75480;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#add-art-form button:hover {
+    background: #a05278;
+}
+
+/* Hide add-art-section by default, shown via JS */
+#add-art-section[style*="display:none"] {
+    display: none !important;
+}
+
+/* Responsive for Add Art Section */
+@media (max-width: 600px) {
+    #add-art-section {
+        padding: 1rem;
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .navbar a {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Delete button in art cards */
+.art-card .delete-art-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    margin-bottom: 1rem; 
+    padding: 0.5rem 1.2rem;
+    background: #ff4d4f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.art-card .delete-art-btn:hover {
+    background: #b71c1c;
+    transform: scale(1.05);
+}
