@@ -10,6 +10,28 @@ const addArtForm = document.getElementById('add-art-form');
 // Load arts from localStorage or initialize empty array
 let arts = JSON.parse(localStorage.getItem('arts')) || [];
 
+// Add default arts if arts is empty
+if (arts.length === 0) {
+    arts = [
+        {
+            title: "Sunset Landscape",
+            image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+            description: "A beautiful sunset over the mountains."
+        },
+        {
+            title: "Abstract Colors",
+            image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
+            description: "An abstract painting with vibrant colors."
+        },
+        {
+            title: "City Skyline",
+            image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
+            description: "A night view of a city skyline."
+        }
+    ];
+    localStorage.setItem('arts', JSON.stringify(arts));
+}
+
 // Render all art cards on the Home page
 function renderArts() {
     portfolio.innerHTML = '';
