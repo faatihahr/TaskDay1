@@ -149,7 +149,7 @@
 #add-art-form textarea {
     width: 100%;
     padding: 0.7rem;
-    padding-right: 0.3rem; /* Tambahkan jarak kanan agar tidak mepet */
+    padding-right: 0.3rem; 
     border: 1px solid #ffd1dc;
     border-radius: 8px;
     margin-bottom: 1rem;
