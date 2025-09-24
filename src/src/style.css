@@ -4,13 +4,35 @@
             --text: #333;
             --card-bg: #fff;
             --shadow: 0 4px 16px rgba(0,0,0,0.07);
+            /* Variabel warna pastel */
+            --pastel-blue: #b3e0ff;
+            --pastel-purple: #d1b3ff;
+            --pastel-pink: #ffd1dc;
+            --pastel-cream: #fff7d1;
         }
+        /* Ganti background body dengan gradasi 4 warna pastel */
+        body.gradient-body {
+            min-height: 100vh;
+            background: linear-gradient(135deg,
+                var(--pastel-blue) 0%,
+                var(--pastel-purple) 33%,
+                var(--pastel-pink) 66%,
+                var(--pastel-cream) 100%
+            ) !important;
+            background-attachment: fixed;
+            color: var(--text);
+            font-family: "Vollkorn", serif;
+            font-optical-sizing: auto;
+            margin: 0;
+        }
+        /*
         body {
             margin: 0;
             font-family: 'Raleway',  'Ranade', sans-serif;
             background: var(--primary);
             color: var(--text);
         }
+        */
         header {
             background: var(--accent);
             padding: 2rem 0 1rem 0;
@@ -90,132 +112,158 @@
             header h1 { font-size: 1.5rem; }
             main { gap: 1rem; }
         }
-/* Navigation Bar Styles */
-.navbar {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    list-style: none;
-    padding: 0;
-    margin: 1.5rem 0 0 0;
-    background: none;
-}
+        /* Navigation Bar Styles */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0 0 0;
+            background: none;
+        }
 
-.navbar li {
-    display: inline;
-}
+        .navbar li {
+            display: inline;
+        }
 
-.navbar a {
-    text-decoration: none;
-    color: #e75480;
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding: 0.5rem 1.2rem;
-    border-radius: 8px;
-    transition: background 0.2s, color 0.2s;
-}
+        .navbar a {
+            text-decoration: none;
+            color: #e75480;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+        }
 
-.navbar a.active,
-.navbar a:hover {
-    background: #e75480;
-    color: #fff;
-}
+        .navbar a.active,
+        .navbar a:hover {
+            background: #e75480;
+            color: #fff;
+        }
+        */
 
-/* Add Art Section (My Projects Page) */
-#add-art-section {
-    max-width: 500px;
-    margin: 2rem auto;
-    background: var(--card-bg);
-    border-radius: 18px;
-    box-shadow: var(--shadow);
-    padding: 2rem 1.5rem;
-    display: block;
-}
+        /* Bootstrap Navbar Link Styles */
+        .custom-nav-link {
+            color: #e75480 !important;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+        }
 
-#add-art-section h2 {
-    text-align: center;
-    color: #e75480;
-    margin-bottom: 1.5rem;
-}
+        .custom-nav-link.active,
+        .custom-nav-link:hover,
+        .custom-nav-link:focus {
+            background: #e75480 !important;
+            color: #fff !important;
+        }
 
-#add-art-form label {
-    display: block;
-    margin: 1rem 0 0.3rem 0;
-    font-weight: 500;
-    color: #a05278;
-}
+        /* Responsive font size for Bootstrap navbar */
+        @media (max-width: 600px) {
+            .custom-nav-link {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+        }
 
-#add-art-form input,
-#add-art-form textarea {
-    width: 100%;
-    padding: 0.7rem;
-    padding-right: 0.3rem; 
-    border: 1px solid #ffd1dc;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    background: #fff0f5;
-    color: var(--text);
-    resize: vertical;
-}
+        /* Add Art Section (My Projects Page) */
+        #add-art-section {
+            max-width: 500px;
+            margin: 2rem auto;
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 2rem 1.5rem;
+            display: block;
+        }
 
-#add-art-form button {
-    display: block;
-    width: 100%;
-    padding: 0.8rem;
-    background: #e75480;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
+        #add-art-section h2 {
+            text-align: center;
+            color: #e75480;
+            margin-bottom: 1.5rem;
+        }
 
-#add-art-form button:hover {
-    background: #a05278;
-}
+        #add-art-form label {
+            display: block;
+            margin: 1rem 0 0.3rem 0;
+            font-weight: 500;
+            color: #a05278;
+        }
 
-/* Hide add-art-section by default, shown via JS */
-#add-art-section[style*="display:none"] {
-    display: none !important;
-}
+        #add-art-form input,
+        #add-art-form textarea {
+            width: 100%;
+            padding: 0.7rem;
+            padding-right: 0.3rem; 
+            border: 1px solid #ffd1dc;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            background: #fff0f5;
+            color: var(--text);
+            resize: vertical;
+        }
 
-/* Responsive for Add Art Section */
-@media (max-width: 600px) {
-    #add-art-section {
-        padding: 1rem;
-    }
+        #add-art-form button {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            background: #e75480;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
-    .navbar {
-        flex-direction: column;
-        gap: 1rem;
-    }
+        #add-art-form button:hover {
+            background: #a05278;
+        }
 
-    .navbar a {
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-    }
-}
+        /* Hide add-art-section by default, shown via JS */
+        #add-art-section[style*="display:none"] {
+            display: none !important;
+        }
 
-/* Delete button in art cards */
-.art-card .delete-art-btn {
-    display: inline-block;
-    margin-top: 1rem;
-    margin-bottom: 1rem; 
-    padding: 0.5rem 1.2rem;
-    background: #ff4d4f;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-}
+        /* Responsive for Add Art Section */
+        @media (max-width: 600px) {
+            #add-art-section {
+                padding: 1rem;
+            }
 
-.art-card .delete-art-btn:hover {
-    background: #b71c1c;
-    transform: scale(1.05);
-}
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .navbar a {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        /* Delete button in art cards */
+        .art-card .delete-art-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            margin-bottom: 1rem; 
+            padding: 0.5rem 1.2rem;
+            background: #ff4d4f;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .art-card .delete-art-btn:hover {
+            background: #b71c1c;
+            transform: scale(1.05);
+        }
