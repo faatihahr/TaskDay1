@@ -6,6 +6,7 @@ const projectsLink = document.getElementById('projects-link');
 const portfolio = document.getElementById('portfolio');
 const addArtSection = document.getElementById('add-art-section');
 const addArtForm = document.getElementById('add-art-form');
+const carouselInner = document.getElementById('carousel-inner');
 
 // Load arts from localStorage or initialize empty array
 let arts = JSON.parse(localStorage.getItem('arts')) || [];
@@ -30,6 +31,26 @@ if (arts.length === 0) {
         }
     ];
     localStorage.setItem('arts', JSON.stringify(arts));
+}
+
+// Render carousel with up to 5 latest arts
+function renderCarousel() {
+    if (!carouselInner) return;
+    carouselInner.innerHTML = '';
+    // Ambil 5 terakhir, urut terbaru di depan
+    const latestArts = arts.slice(-5).reverse();
+    latestArts.forEach((art, idx) => {
+        const item = document.createElement('div');
+        item.className = 'carousel-item' + (idx === 0 ? ' active' : '');
+        item.innerHTML = `
+            <img src="${art.image}" class="d-block w-100" alt="${art.title}">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>${art.title}</h5>
+                <p>${art.description}</p>
+            </div>
+        `;
+        carouselInner.appendChild(item);
+    });
 }
 
 // Render all art cards on the Home page
@@ -58,6 +79,7 @@ function renderArts() {
             arts.splice(index, 1);
             localStorage.setItem('arts', JSON.stringify(arts));
             renderArts();
+            renderCarousel(); // update carousel if art deleted
         });
     });
 }
@@ -109,6 +131,7 @@ addArtForm.addEventListener('submit', function(e) {
             addArtForm.reset();
             showHome();
             renderArts();
+            renderCarousel(); // update carousel with new art
         };
         reader.readAsDataURL(imageInput.files[0]);
     }
@@ -116,4 +139,5 @@ addArtForm.addEventListener('submit', function(e) {
 
 // Initial page load
 renderArts();
+renderCarousel(); // render carousel on load
 showHome();
