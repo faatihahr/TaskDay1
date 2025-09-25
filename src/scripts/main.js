@@ -137,6 +137,34 @@ addArtForm.addEventListener('submit', function(e) {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    const homeLink = document.getElementById("home-link");
+    const projectsLink = document.getElementById("projects-link");
+    const portfolioSection = document.getElementById("portfolio");
+    const addArtSection = document.getElementById("add-art-section");
+    const carouselWrapper = document.getElementById("artCarouselWrapper");
+
+    // Tampilkan Home
+    homeLink.addEventListener("click", function(e) {
+        e.preventDefault();
+        homeLink.classList.add("active");
+        projectsLink.classList.remove("active");
+        portfolioSection.style.display = "";
+        carouselWrapper.style.display = "";
+        addArtSection.style.display = "none";
+    });
+
+    // Tampilkan My Projects (Add Art)
+    projectsLink.addEventListener("click", function(e) {
+        e.preventDefault();
+        projectsLink.classList.add("active");
+        homeLink.classList.remove("active");
+        portfolioSection.style.display = "none";
+        carouselWrapper.style.display = "none";
+        addArtSection.style.display = "";
+    });
+});
+
 // Initial page load
 renderArts();
 renderCarousel(); // render carousel on load
