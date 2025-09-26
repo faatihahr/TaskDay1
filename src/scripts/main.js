@@ -1,5 +1,3 @@
-// Navigation and Form Logic for Portfolio Website
-
 // Get DOM elements
 const homeLink = document.getElementById('home-link');
 const projectsLink = document.getElementById('projects-link');
@@ -24,11 +22,6 @@ if (arts.length === 0) {
             image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
             description: "An abstract painting with vibrant colors."
         },
-        {
-            title: "City Skyline",
-            image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
-            description: "A night view of a city skyline."
-        }
     ];
     localStorage.setItem('arts', JSON.stringify(arts));
 }
@@ -37,7 +30,6 @@ if (arts.length === 0) {
 function renderCarousel() {
     if (!carouselInner) return;
     carouselInner.innerHTML = '';
-    // Ambil 5 terakhir, urut terbaru di depan
     const latestArts = arts.slice(-5).reverse();
     latestArts.forEach((art, idx) => {
         const item = document.createElement('div');
@@ -53,8 +45,39 @@ function renderCarousel() {
     });
 }
 
+// Fungsi untuk menampilkan halaman detail art
+function showArtDetail(art) {
+    // Buat overlay detail
+    const overlay = document.createElement('div');
+    overlay.id = 'art-detail-overlay';
+    overlay.innerHTML = `
+        <div class="art-detail-modal rounded-4 shadow-lg p-4 bg-white bg-opacity-90">
+            <button class="close-detail-btn" aria-label="Close">&times;</button>
+            <img src="${art.image}" alt="${art.title}" class="art-detail-img rounded-3 mb-4" style="max-width:100%;max-height:350px;object-fit:contain;">
+            <h2 class="art-detail-title mb-3" style="color:#500b1f;">${art.title}</h2>
+            <p class="art-detail-desc mb-2" style="color:#500b1f;font-size:1.2rem;">${art.description}</p>
+        </div>
+    `;
+    Object.assign(overlay.style, {
+        position: 'fixed',
+        top: 0, left: 0, right: 0, bottom: 0,
+        background: 'rgba(0,0,0,0.5)',
+        zIndex: 9999,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    });
+    document.body.appendChild(overlay);
+
+    // Close button
+    overlay.querySelector('.close-detail-btn').onclick = () => overlay.remove();
+    // Close on overlay click (not modal)
+    overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+}
+
 // Render all art cards on the Home page
 function renderArts() {
+    if (!portfolio) return;
     portfolio.innerHTML = '';
     if (arts.length === 0) {
         portfolio.innerHTML = '<p style="text-align:center;">No art uploaded yet.</p>';
@@ -64,108 +87,97 @@ function renderArts() {
         const card = document.createElement('div');
         card.className = 'art-card';
         card.innerHTML = `
-            <img src="${art.image}" alt="${art.title}" style="max-width:100%;border-radius:10px;">
-            <h3>${art.title}</h3>
-            <p>${art.description}</p>
+            <img src="${art.image}" alt="${art.title}">
+            <div class="art-info">
+                <h3 class="art-title">${art.title}</h3>
+                <p class="art-desc">${art.description}</p>
+            </div>
             <button class="delete-art-btn" data-index="${idx}">Delete</button>
         `;
+        // Event click untuk menampilkan detail
+        card.addEventListener('click', function(e) {
+            // Hindari trigger saat klik tombol delete
+            if (e.target.classList.contains('delete-art-btn')) return;
+            showArtDetail(art);
+        });
         portfolio.appendChild(card);
     });
 
     // Add event listeners for delete buttons
     document.querySelectorAll('.delete-art-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Hindari buka detail saat delete
             const index = this.getAttribute('data-index');
             arts.splice(index, 1);
             localStorage.setItem('arts', JSON.stringify(arts));
             renderArts();
-            renderCarousel(); // update carousel if art deleted
+            renderCarousel();
         });
     });
 }
 
-// Show Home (art cards), hide Add Art form
-function showHome() {
-    portfolio.style.display = 'block';
-    addArtSection.style.display = 'none';
-    homeLink.classList.add('active');
-    projectsLink.classList.remove('active');
-}
+// Handle Add Art form submission (only on My Projects page)
+if (addArtForm) {
+    addArtForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const title = document.getElementById('art-title').value.trim();
+        const imageInput = document.getElementById('art-image');
+        const description = document.getElementById('art-description').value.trim();
 
-// Show Add Art form, hide Home (art cards)
-function showProjects() {
-    portfolio.style.display = 'none';
-    addArtSection.style.display = 'block';
-    homeLink.classList.remove('active');
-    projectsLink.classList.add('active');
-}
-
-// Navigation event listeners
-homeLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showHome();
-});
-
-projectsLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showProjects();
-});
-
-// Handle Add Art form submission
-addArtForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const title = document.getElementById('art-title').value.trim();
-    const imageInput = document.getElementById('art-image');
-    const description = document.getElementById('art-description').value.trim();
-
-    if (title && imageInput.files[0] && description) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const newArt = { 
-                title, 
-                image: event.target.result, // base64 image
-                description 
+        if (title && imageInput.files[0] && description) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const newArt = { 
+                    title, 
+                    image: event.target.result,
+                    description 
+                };
+                arts.push(newArt);
+                localStorage.setItem('arts', JSON.stringify(arts));
+                addArtForm.reset();
+                window.location.href = "home.html"; // Redirect to home after add
             };
-            arts.push(newArt);
-            localStorage.setItem('arts', JSON.stringify(arts));
-            addArtForm.reset();
-            showHome();
-            renderArts();
-            renderCarousel(); // update carousel with new art
-        };
-        reader.readAsDataURL(imageInput.files[0]);
-    }
-});
+            reader.readAsDataURL(imageInput.files[0]);
+        }
+    });
+}
 
+// Initial page load logic
 document.addEventListener("DOMContentLoaded", function() {
-    const homeLink = document.getElementById("home-link");
-    const projectsLink = document.getElementById("projects-link");
-    const portfolioSection = document.getElementById("portfolio");
-    const addArtSection = document.getElementById("add-art-section");
-    const carouselWrapper = document.getElementById("artCarouselWrapper");
+    // Home page
+    if (portfolio && carouselInner) {
+        renderArts();
+        renderCarousel();
+    }
+    
+    // My Projects page
+    if (addArtForm) {
+        // nothing extra needed, handled above
+    }
 
-    // Tampilkan Home
-    homeLink.addEventListener("click", function(e) {
-        e.preventDefault();
-        homeLink.classList.add("active");
-        projectsLink.classList.remove("active");
-        portfolioSection.style.display = "";
-        carouselWrapper.style.display = "";
-        addArtSection.style.display = "none";
-    });
+    // Smooth scroll to footer on Contact navbar click
+    const contactLink = document.getElementById("contact-link");
+    const footer = document.getElementById("contact-footer");
 
-    // Tampilkan My Projects (Add Art)
-    projectsLink.addEventListener("click", function(e) {
-        e.preventDefault();
-        projectsLink.classList.add("active");
-        homeLink.classList.remove("active");
-        portfolioSection.style.display = "none";
-        carouselWrapper.style.display = "none";
-        addArtSection.style.display = "";
-    });
+    if (contactLink && footer) {
+        contactLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            footer.scrollIntoView({ behavior: "smooth" });
+        });
+    }
+
+    //Profile page 
+    const profileLink = document.getElementById("profile-link");
+    if (profileLink) {
+        profileLink.addEventListener("click", function (e) {
+            document.body.style.transition = "opacity 0.5s";
+            document.body.style.opacity = 0;
+            setTimeout(() => {
+                window.location.href = "profile.html";
+            }, 500);
+            e.preventDefault();  
+            window.location.href = "profile.html"; 
+        });
+    }
+
 });
-
-// Initial page load
-renderArts();
-renderCarousel(); // render carousel on load
-showHome();

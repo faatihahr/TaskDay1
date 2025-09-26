@@ -1,0 +1,50 @@
+body {
+      margin: 0;
+      height: 100vh;
+      background: url('../images/bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Caprasimo", serif;
+    }
+
+    main {
+      padding: 2rem 3rem;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      background: rgba(255,255,255,0.7); /* Menurunkan opacity container */
+    }
+
+    main h1 {
+      font-size: 2.5rem;
+      color: #500b1f;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    main p {
+      font-size: 1.2rem;
+      color: #500b1f;
+      margin-bottom: 2rem;
+    }
+
+    .landing-btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+      background: #e75480;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .landing-btn:hover {
+      background: #a05278;
+      text-decoration: none;
+    }

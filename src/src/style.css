@@ -25,6 +25,7 @@
             font-optical-sizing: auto;
             margin: 0;
         }
+
         /*
         body {
             margin: 0;
@@ -74,6 +75,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            text-align: center;
         }
         .art-card:hover {
             transform: translateY(-8px) scale(1.03);
@@ -81,8 +83,8 @@
         }
         .art-img {
             width: 100%;
-            height: 180px;
-            object-fit: cover;
+            height: 220px;            /* samakan tinggi semua gambar */
+            object-fit: cover;        /* gambar tetap proporsional */
             background: var(--primary);
         }
         .art-info {
@@ -142,7 +144,35 @@
             background: #e75480;
             color: #fff;
         }
-        */
+
+        /* detail art */
+        .art-detail-modal {
+        max-width: 420px;
+        width: 90vw;
+        background: rgba(255,255,255,0.95);
+        position: relative;
+        text-align: center;
+        }
+
+        .close-detail-btn {
+        position: absolute;
+        top: 18px;
+        right: 24px;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #e75480;
+        cursor: pointer;
+        z-index: 2;
+        transition: color 0.2s;
+    }
+    .close-detail-btn:hover {
+    color: #500b1f;
+    }
+
+    .art-detail-img {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
 
         /* Bootstrap Navbar Link Styles */
         .custom-nav-link {
@@ -296,5 +326,67 @@
             #artCarouselWrapper {
             margin: 1rem auto 1.5rem auto;
             }
-}
+        }
+        /* Container Profil */
+    .profile-container {
+      max-width: 1000px;
+      margin: 4rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      background: var(--card-bg); 
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+      padding: 2rem;
+    }
 
+    /* Bagian teks */
+    .profile-text {
+      flex: 1;
+      text-align: left;
+      font-family: "Vollkorn", serif; /* mengikuti font art card */
+    }
+
+    .profile-text h2 {
+      font-size: 2rem;
+      color: #e75480;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    .profile-text p {
+      font-size: 1.1rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* Foto Profil */
+    .profile-image {   
+        object-fit: cover;        
+        max-width: 250px;
+        max-height: 250px;
+        width: 100%;
+        height: auto;
+        background: var(--primary);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        display: block;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .profile-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      .profile-text {
+        text-align: center;
+      }
+      .profile-image {
+        max-width: 200px;
+        max-height: 200px;
+        width: 100%;
+        height: auto;
+      }
+    }
