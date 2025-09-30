@@ -6,8 +6,17 @@ const addArtSection = document.getElementById('add-art-section');
 const addArtForm = document.getElementById('add-art-form');
 const carouselInner = document.getElementById('carousel-inner');
 
-// Load arts from localStorage or initialize empty array
-let arts = JSON.parse(localStorage.getItem('arts')) || [];
+// Load arts from localStorage or initialize empty array, with error handling
+let arts = [];
+try {
+    const storedArts = localStorage.getItem('arts');
+    arts = storedArts ? JSON.parse(storedArts) : [];
+    if (!Array.isArray(arts)) arts = [];
+} catch (e) {
+    console.error('Failed to parse arts from localStorage:', e);
+    arts = [];
+}
+console.log('Loaded arts:', arts);
 
 // Add default arts if arts is empty
 if (arts.length === 0) {
@@ -24,10 +33,12 @@ if (arts.length === 0) {
         },
     ];
     localStorage.setItem('arts', JSON.stringify(arts));
+    console.log('Default arts set:', arts);
 }
 
 // Render carousel with up to 5 latest arts
 function renderCarousel() {
+    console.log('renderCarousel called');
     if (!carouselInner) return;
     carouselInner.innerHTML = '';
     const latestArts = arts.slice(-5).reverse();
@@ -43,15 +54,23 @@ function renderCarousel() {
         `;
         carouselInner.appendChild(item);
     });
+    console.log('Carousel rendered with arts:', latestArts);
 }
 
 // Fungsi untuk menampilkan halaman detail art
 function showArtDetail(art) {
+    console.log('showArtDetail called with:', art);
+    // Cegah multiple overlays
+    if (document.getElementById('art-detail-overlay')) return;
+
     // Buat overlay detail
     const overlay = document.createElement('div');
     overlay.id = 'art-detail-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.tabIndex = -1;
     overlay.innerHTML = `
-        <div class="art-detail-modal rounded-4 shadow-lg p-4 bg-white bg-opacity-90">
+        <div class="art-detail-modal rounded-4 shadow-lg p-4 bg-white bg-opacity-90" tabindex="0">
             <button class="close-detail-btn" aria-label="Close">&times;</button>
             <img src="${art.image}" alt="${art.title}" class="art-detail-img rounded-3 mb-4" style="max-width:100%;max-height:350px;object-fit:contain;">
             <h2 class="art-detail-title mb-3" style="color:#500b1f;">${art.title}</h2>
@@ -69,18 +88,49 @@ function showArtDetail(art) {
     });
     document.body.appendChild(overlay);
 
+    // Trap focus in modal
+    const modal = overlay.querySelector('.art-detail-modal');
+    const closeBtn = overlay.querySelector('.close-detail-btn');
+    let lastFocused = document.activeElement;
+    setTimeout(() => modal.focus(), 10);
+
+    function trapFocus(e) {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            closeBtn.focus();
+        }
+        if (e.key === 'Escape') {
+            overlay.remove();
+            if (lastFocused) lastFocused.focus();
+            console.log('Art detail overlay closed with Escape');
+        }
+    }
+    modal.addEventListener('keydown', trapFocus);
+
     // Close button
-    overlay.querySelector('.close-detail-btn').onclick = () => overlay.remove();
+    closeBtn.onclick = () => {
+        overlay.remove();
+        if (lastFocused) lastFocused.focus();
+        console.log('Art detail overlay closed');
+    };
     // Close on overlay click (not modal)
-    overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+    overlay.onclick = e => { 
+        if (e.target === overlay) {
+            overlay.remove();
+            if (lastFocused) lastFocused.focus();
+            console.log('Art detail overlay closed by background click');
+        }
+    };
 }
 
 // Render all art cards on the Home page
 function renderArts() {
+    console.log('renderArts called');
     if (!portfolio) return;
     portfolio.innerHTML = '';
     if (arts.length === 0) {
         portfolio.innerHTML = '<p style="text-align:center;">No art uploaded yet.</p>';
+        console.log('No arts to render');
         return;
     }
     arts.forEach((art, idx) => {
@@ -96,24 +146,28 @@ function renderArts() {
         `;
         // Event click untuk menampilkan detail
         card.addEventListener('click', function(e) {
-            // Hindari trigger saat klik tombol delete
             if (e.target.classList.contains('delete-art-btn')) return;
             showArtDetail(art);
         });
         portfolio.appendChild(card);
     });
 
-    // Add event listeners for delete buttons
-    document.querySelectorAll('.delete-art-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Hindari buka detail saat delete
-            const index = this.getAttribute('data-index');
-            arts.splice(index, 1);
-            localStorage.setItem('arts', JSON.stringify(arts));
-            renderArts();
-            renderCarousel();
-        });
-    });
+    // Event delegation for delete buttons
+    portfolio.addEventListener('click', function(e) {
+        if (e.target.classList.contains('delete-art-btn')) {
+            e.stopPropagation();
+            const index = Number(e.target.getAttribute('data-index'));
+            if (!isNaN(index)) {
+                arts.splice(index, 1);
+                localStorage.setItem('arts', JSON.stringify(arts));
+                console.log('Art deleted at index:', index, 'Current arts:', arts);
+                renderArts();
+                renderCarousel();
+            }
+        }
+    }, { once: true });
+
+    console.log('Arts rendered:', arts);
 }
 
 // Handle Add Art form submission (only on My Projects page)
@@ -123,6 +177,8 @@ if (addArtForm) {
         const title = document.getElementById('art-title').value.trim();
         const imageInput = document.getElementById('art-image');
         const description = document.getElementById('art-description').value.trim();
+
+        console.log('Add Art form submitted:', { title, imageInput, description });
 
         if (title && imageInput.files[0] && description) {
             const reader = new FileReader();
@@ -134,25 +190,24 @@ if (addArtForm) {
                 };
                 arts.push(newArt);
                 localStorage.setItem('arts', JSON.stringify(arts));
+                console.log('New art added:', newArt, 'Current arts:', arts);
                 addArtForm.reset();
                 window.location.href = "home.html"; // Redirect to home after add
             };
             reader.readAsDataURL(imageInput.files[0]);
+        } else {
+            console.log('Add Art form validation failed');
         }
     });
 }
 
 // Initial page load logic
 document.addEventListener("DOMContentLoaded", function() {
+    console.log('DOMContentLoaded event fired');
     // Home page
     if (portfolio && carouselInner) {
         renderArts();
         renderCarousel();
-    }
-    
-    // My Projects page
-    if (addArtForm) {
-        // nothing extra needed, handled above
     }
 
     // Smooth scroll to footer on Contact navbar click
@@ -163,10 +218,11 @@ document.addEventListener("DOMContentLoaded", function() {
         contactLink.addEventListener("click", function (e) {
             e.preventDefault();
             footer.scrollIntoView({ behavior: "smooth" });
+            console.log('Smooth scroll to footer triggered');
         });
     }
 
-    //Profile page 
+    // Profile page 
     const profileLink = document.getElementById("profile-link");
     if (profileLink) {
         profileLink.addEventListener("click", function (e) {
@@ -175,9 +231,8 @@ document.addEventListener("DOMContentLoaded", function() {
             setTimeout(() => {
                 window.location.href = "profile.html";
             }, 500);
-            e.preventDefault();  
-            window.location.href = "profile.html"; 
+            e.preventDefault();
+            console.log('Profile link clicked');
         });
     }
-
 });
