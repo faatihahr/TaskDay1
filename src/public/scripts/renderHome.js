@@ -1,7 +1,7 @@
 // rendering arts on the homepage
 import { arts } from './storage.js';
 import { renderCarousel } from './carousel.js';
-import { showArtDetail } from './detail.js';
+import { showArtDetail } from './detailArt.js';
 
 console.log('[render.js] Loaded');
 

@@ -1,7 +1,7 @@
 // js/main.js
-import { renderArts } from './render.js';
+import { renderArts } from './renderHome.js';
 import { renderCarousel } from './carousel.js';
-import { setupAddArtForm } from './form.js';
+import { setupAddArtForm } from './addArtForm.js';
 
 console.log('[main.js] Loaded');
 
