@@ -4,11 +4,12 @@ import { setupAddArtForm } from './addArtForm.js';
 // import { renderCarousel } from './carousel.js';
 
 console.log('[main.js] Loaded');
-
+console.log('renderHome.js loaded');
 document.addEventListener('DOMContentLoaded', () => {
-  // Aktifkan fitur pada halaman home
+  console.log('DOM ready, calling enableArtDetail from main.js');
   if (document.getElementById('portfolio')) {
     enableArtDetail();
+    console.log('enableArtDetail() called');
   }
 
   // Aktifkan form hanya jika ada
