@@ -1,61 +1,51 @@
-// rendering arts on the homepage
-import { arts } from './storage.js';
-import { renderCarousel } from './carousel.js';
+// renderHome.js
 import { showArtDetail } from './detailArt.js';
 
-console.log('[render.js] Loaded');
+console.log('[renderHome.js] Loaded');
 
-const portfolio = document.getElementById('portfolio');
+export function enableArtDetail() {
+  // Cari semua card yang sudah dirender server di home.hbs
+  const cards = document.querySelectorAll('.art-card');
 
-const createArtCard = (art, idx, onDelete) => {
-  const card = document.createElement('div');
-  card.className = 'art-card';
-  card.innerHTML = `
-      <img src="${art.image}" alt="${art.title}">
-      <div class="art-info">
-          <h3 class="art-title">${art.title}</h3>
-          <p class="art-desc">${art.description}</p>
-      </div>
-      <button class="delete-art-btn" data-index="${idx}">Delete</button>
-  `;
+  cards.forEach(card => {
+    card.addEventListener('click', e => {
+      const isDeleteBtn = e.target.classList.contains('delete-art-btn');
+      if (!isDeleteBtn) {
+        const art = {
+          title: card.dataset.title,
+          description: card.dataset.description,
+          image: card.dataset.image
+        };
+        showArtDetail(art);
+      }
+    });
+  });
+  // Event listener for the Delete Button (New logic)
+  const deleteButton = card.querySelector('.delete-art-btn');
+    if (deleteButton) {
+        deleteButton.addEventListener('click', async (e) => {
+            e.stopPropagation(); // Mencegah klik tombol memicu showArtDetail
+            const artTitle = deleteButton.dataset.artTitle;
+            if (confirm(`Are you sure you want to delete the art titled "${artTitle}"?`)) {
+                try {
+                    const response = await fetch('/delete-art', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ title: artTitle })
+                    });
 
-  card.addEventListener('click', e => {
-    if (!e.target.classList.contains('delete-art-btn')) {
-      showArtDetail(art);
+                    if (response.ok) {
+                        console.log(`Art titled "${artTitle}" deleted successfully.`);
+                        card.remove(); // Hapus card dari tampilan
+                    } else {
+                        console.error(`Failed to delete art titled "${artTitle}".`);
+                    }
+                } catch (error) {
+                    console.error('Error deleting art:', error);
+                }
+            }
+        });
     }
-  });
-
-  card.querySelector('.delete-art-btn').addEventListener('click', e => {
-    e.stopPropagation();
-    onDelete(idx);
-  });
-
-  return card;
-};
-
-export function renderArts() {
-  console.log('renderArts() called');
-
-  if (!portfolio) {
-    console.warn('No portfolio container found');
-    return;
-  }
-
-  portfolio.innerHTML = arts.length === 0
-    ? '<p style="text-align:center;">No art uploaded yet.</p>'
-    : '';
-
-  arts.map((art, idx) =>
-    portfolio.appendChild(
-      createArtCard(art, idx, index => {
-        console.log(`Deleting art at index ${index}`);
-        arts.splice(index, 1);
-        localStorage.setItem('arts', JSON.stringify(arts));
-        renderArts();
-        renderCarousel();
-      })
-    )
-  );
-
-  console.log('Arts rendered. Total:', arts.length);
-}
+  };

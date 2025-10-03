@@ -1,17 +1,25 @@
 // js/main.js
-import { renderArts } from './renderHome.js';
-import { renderCarousel } from './carousel.js';
+import { enableArtDetail } from './renderHome.js';
 import { setupAddArtForm } from './addArtForm.js';
+// import { renderCarousel } from './carousel.js';
 
 console.log('[main.js] Loaded');
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById('portfolio') && document.getElementById('carousel-inner')) {
-    renderArts();
-    renderCarousel();
+document.addEventListener('DOMContentLoaded', () => {
+  // Aktifkan fitur pada halaman home
+  if (document.getElementById('portfolio')) {
+    enableArtDetail();
   }
 
-  setupAddArtForm();
+  // Aktifkan form hanya jika ada
+  if (document.getElementById('add-art-form')) {
+    setupAddArtForm();
+  }
+
+  // // Render carousel
+  // if (document.getElementById('artCarousel')) {
+  //   renderCarousel();
+  // }
 
   const contactLink = document.getElementById("contact-link");
   const footer = document.getElementById("contact-footer");
@@ -30,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.style.transition = "opacity 0.5s";
       document.body.style.opacity = 0;
       setTimeout(() => {
-        window.location.href = "profile.html";
+        window.location.href = "/profile";
       }, 500);
       console.log('Profile link clicked');
     });

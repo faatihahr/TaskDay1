@@ -1,7 +1,5 @@
-// handling the Add Art form submission
-import { arts } from './storage.js';
-
-console.log('[form.js] Loaded');
+// public/scripts/addArtForm.js
+console.log('[addArtForm.js] Loaded');
 
 export function setupAddArtForm() {
   console.log('setupAddArtForm() initialized');
@@ -23,14 +21,27 @@ export function setupAddArtForm() {
     if (title && imageInput.files[0] && description) {
       const reader = new FileReader();
       reader.onload = event => {
-        const newArt = { title, image: event.target.result, description };
-        arts.push(newArt);
-        localStorage.setItem('arts', JSON.stringify(arts));
-        console.log('New art added:', newArt);
-        addArtForm.reset();
-        window.location.href = "home.html";
+        // Kirim data ke server
+        fetch('/add-art', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            description,
+            image: event.target.result // base64 image
+          })
+        })
+          .then(res => {
+            if (res.ok) {
+              console.log('Art added successfully');
+              window.location.href = '/home'; // redirect ke home untuk melihat data baru
+            } else {
+              console.error('Failed to add art');
+            }
+          })
+          .catch(err => console.error('Error:', err));
       };
-      reader.readAsDataURL(imageInput.files[0]);
+      reader.readAsDataURL(imageInput.files[0]); // konversi gambar ke base64
     } else {
       console.warn('Invalid input: some fields are empty');
     }
