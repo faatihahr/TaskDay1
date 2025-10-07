@@ -1,9 +1,11 @@
 // server.js  (Express Web Server)
+const pool = require('./database/db');
 const express = require('express');
 const path = require('path');
 const hbs = require('hbs');
-
-const { arts, saveArts} = require('./dataHandler');
+const cookieParser = require('cookie-parser');
+const { getArts, addArt, editArt, deleteArt, getAdmin } = require('./dataHandler');
+const bcrypt = require('bcrypt'); // Untuk password hash
 
 const app = express();
 const PORT = 3000;
@@ -18,6 +20,8 @@ app.use((req, res, next) => {
   console.log(`[${now.toISOString()}] ${req.method} ${req.url}`);
   next(); // Lanjut ke middleware/route berikutnya
 });
+//Cookie parser middleware
+app.use(cookieParser());
 
 // Middleware untuk parse body JSON (jika nanti menerima data POST)
 app.use(express.json());
@@ -28,66 +32,90 @@ app.use(express.urlencoded({ extended: true }));
 // Layani semua file statis dari folder public
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware untuk cek admin
+function requireAdmin(req, res, next) {
+  if (req.cookies && req.cookies.isAdmin === 'true') return next();
+  res.status(403).send('<h1>403 - Forbidden</h1>');
+}
+
 // Routing index
 app.get('/', (req, res) => {
-  res.render('index', { title: 'Digital Art Portfolio', activePage: 'index' });
+  res.render('index', { title: 'Digital Art Portfolio', activePage: 'index', isAdmin: req.cookies.isAdmin === 'true' });
 });
 
-// Routing home (art dan carousel)
-app.get('/home', (req, res) => {
-  const latestArts = arts.slice(0, 5); // Ambil 5 karya terbaru
-  console.log('Rendering /home with carouselArts:', latestArts);
-  res.render('home', { title: 'Home - Digital Art Portfolio', activePage: 'home', arts, carouselArts: latestArts });
-});
-//Route POST delete-art//
-app.delete('/delete-art', express.json(), (req, res) => {
-  const { title } = req.body;
-  if (!title) {
-    return res.status(400).send('Invalid data');
-  }
-  const indexToDelete = arts.findIndex(art => art.title === title);
-  if (indexToDelete === -1) {
-    return res.status(404).send('Art not found');
-  }
-  arts.splice(indexToDelete, 1);
-  saveArts();
-  res.status(200).send('OK');
+// Admin login page
+app.get('/admin-login', (req, res) => {
+  res.render('admin-login', { title: 'Admin Login', activePage: 'admin-login' });
 });
 
-// Routing my-projects
-app.get('/my-projects', (req, res) => {
-  res.render('my-projects', { title: 'My Projects - Digital Art Portfolio', activePage: 'my-projects' });
+// Admin login POST (menggunakan database)
+app.post('/admin-login', async (req, res) => {
+  const { username, password } = req.body;
+  const admin = await getAdmin(username);
+  if (admin && await bcrypt.compare(password, admin.password_hash)) {
+    res.cookie('isAdmin', 'true', { httpOnly: true });
+    return res.redirect('/my-projects');
+  }
+  res.render('admin-login', { title: 'Admin Login', error: 'Invalid credentials' });
 });
-// Route POST add-art//
-app.post('/add-art', express.json(), (req, res) => {
+
+// Routing my-projects (hanya admin, data dari database)
+app.get('/my-projects', requireAdmin, async (req, res) => {
+  const arts = await getArts();
+  res.render('my-projects', { title: 'My Projects', arts, activePage: 'my-projects', isAdmin: req.cookies.isAdmin === 'true' });
+});
+
+// Route POST add-art (hanya admin, data ke database)
+app.post('/add-art', requireAdmin, async (req, res) => {
   const { title, description, image } = req.body;
   if (!title || !image || !description) {
     return res.status(400).send('Invalid data');
   }
-  // Simpan di awal array agar yang terbaru di posisi pertama//
-  arts.unshift({ title, description, image });
-  saveArts(); // Simpan perubahan ke file JSON
-  console.log('New art added:', title);
+  await addArt({ title, description, image });
   res.status(200).send('OK');
+});
+
+// Route POST edit-art (hanya admin, data ke database)
+app.post('/edit-art', requireAdmin, async (req, res) => {
+  const { id, title, description, image } = req.body;
+  await editArt({ id, title, description, image });
+  res.status(200).send('OK');
+});
+
+// Route DELETE delete-art (hanya admin, data ke database)
+app.delete('/delete-art', requireAdmin, async (req, res) => {
+  const { id } = req.body;
+  await deleteArt(id);
+  res.status(200).send('OK');
+});
+
+// Routing home (art dan carousel)
+app.get('/home', async (req, res) => {
+  const arts = await getArts();
+  const latestArts = arts.slice(0, 5);
+  res.render('home', { title: 'Home - Digital Art Portfolio', activePage: 'home', arts, carouselArts: latestArts, isAdmin: req.cookies.isAdmin === 'true' });
 });
 
 // Route profile
 app.get('/profile', (req, res) => {
-  res.render('profile', { title: 'About Me - Digital Art Portfolio', activePage: 'profile' });
+  res.render('profile', { title: 'About Me - Digital Art Portfolio', activePage: 'profile', isAdmin: req.cookies.isAdmin === 'true' });
 });
 
 // Route contact
 app.get('/contact', (req, res) => {
-  res.render('contact', { title: 'Contact - Digital Art Portfolio', activePage: 'contact' });
+  res.render('contact', { title: 'Contact - Digital Art Portfolio', activePage: 'contact', isAdmin: req.cookies.isAdmin === 'true' });
 });
 
-//Middleware penanganan error//
-// Jika route tidak ditemukan (404)
+// Route logout
+app.get('/logout', (req, res) => {
+  res.clearCookie('isAdmin');
+  res.redirect('/');
+});
+
+// 404 dan 500 error handler
 app.use((req, res, next) => {
   res.status(404).send('<h1>404 - Page Not Found</h1>');
 });
-
-// Jika terjadi error di server (500)
 app.use((err, req, res, next) => {
   console.error('Internal Server Error:', err);
   res.status(500).send('<h1>500 - Internal Server Error</h1>');
@@ -100,4 +128,12 @@ hbs.registerHelper('eq', function(a, b) {
 // Jalankan server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
+  // Tes koneksi database
+  pool.query('SELECT NOW()', (err, result) => {
+    if (err) {
+      console.error('❌ Database connection failed:', err.message);
+    } else {
+      console.log('✅ Database connected! Current time:', result.rows[0].now);
+    }
+  });
 });

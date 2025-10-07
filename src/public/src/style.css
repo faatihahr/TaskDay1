@@ -390,3 +390,131 @@
         height: auto;
       }
     }
+
+    /* --- Edit Art Section --- */
+#edit-art-section {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem;
+    display: block;
+}
+
+#edit-art-section h2 {
+    text-align: center;
+    color: #e75480;
+    margin-bottom: 1.5rem;
+}
+
+#edit-art-form label {
+    display: block;
+    margin: 1rem 0 0.3rem 0;
+    font-weight: 500;
+    color: #a05278;
+}
+
+#edit-art-form input,
+#edit-art-form textarea {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid #ffd1dc;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    background: #fff0f5;
+    color: var(--text);
+    resize: vertical;
+}
+
+#edit-art-form button {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    background: #e75480;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#edit-art-form button:hover {
+    background: #a05278;
+}
+
+/* --- Art List Section --- */
+#arts-list {
+    max-width: 700px;
+    margin: 2rem auto;
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem;
+}
+
+#arts-list h2 {
+    text-align: center;
+    color: #e75480;
+    margin-bottom: 1.5rem;
+}
+
+#arts-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#arts-list li {
+    background: #fff0f5;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(231,84,128,0.07);
+    margin-bottom: 1.2rem;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+#arts-list li strong {
+    color: #e75480;
+    font-size: 1.05rem;
+    font-weight: bold;
+}
+
+.edit-btn {
+    background: #ffd1dc;
+    color: #a05278;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.edit-btn:hover {
+    background: #e75480;
+    color: #fff;
+}
+.art-actions { 
+    display: flex; 
+    gap: 0.5rem; 
+}
+/* Responsive for Edit Art & Art List */
+@media (max-width: 600px) {
+    #edit-art-section,
+    #arts-list {
+        padding: 1rem;
+    }
+    #arts-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}

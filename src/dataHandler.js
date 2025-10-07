@@ -1,47 +1,29 @@
-// dataHandler.js
-const fs = require('fs');
-const path = require('path');
+const pool = require('./database/db');
 
-// TENTUKAN LOKASI FILE DATA: artsData.json akan berada di direktori yang sama dengan dataHandler.js
-const DATA_FILE = path.join(__dirname, 'artsData.json');
-let arts = []; // Array yang akan menyimpan data art
-
-
-//  Memuat data art dari file JSON lokal saat server dimulai.
-function loadArts() {
-  try {
-    // Membaca konten file secara synchronous (agar data siap sebelum Express mulai routing)
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    arts = JSON.parse(data);
-    console.log(`[Persistence] Loaded ${arts.length} arts from file: ${DATA_FILE}`);
-  } catch (err) {
-    // Jika file tidak ada (pertama kali dijalankan), atau ada error baca/parse
-    if (err.code === 'ENOENT') {
-      console.log('[Persistence] Art data file not found. Starting with empty array.');
-      arts = [];
-    } else {
-      console.error('[Persistence] Error loading arts data:', err);
-    }
-  }
+async function getArts() {
+  const res = await pool.query('SELECT * FROM arts ORDER BY created_at DESC');
+  return res.rows;
 }
 
-
-// Menyimpan data array 'arts' ke file JSON lokal setelah ada perubahan.
-function saveArts() {
-  try {
-    // Menulis array 'arts' ke file secara synchronous
-    fs.writeFileSync(DATA_FILE, JSON.stringify(arts, null, 2), 'utf8');
-    console.log('[Persistence] Art data saved successfully.');
-  } catch (err) {
-    console.error('[Persistence] Error saving arts data:', err);
-  }
+async function addArt({ title, description, image }) {
+  await pool.query(
+    'INSERT INTO arts (title, description, image) VALUES ($1, $2, $3)',
+    [title, description, image]
+  );
 }
 
-// Panggil fungsi loadArts() saat modul ini dimuat pertama kali oleh server.js
-loadArts();
+async function editArt({ id, title, description, image }) {
+  await pool.query(
+    'UPDATE arts SET title=$1, description=$2, image=$3, updated_at=NOW() WHERE id=$4',
+    [title, description, image, id]
+  );
+}
 
-// Export array 'arts' dan fungsi 'saveArts' agar bisa diakses oleh server.js
-module.exports = {
-  arts,
-  saveArts
-};
+async function deleteArt(id) {
+  await pool.query('DELETE FROM arts WHERE id=$1', [id]);
+}
+async function getAdmin(username) {
+  const res = await pool.query('SELECT * FROM admins WHERE username=$1', [username]);
+  return res.rows[0];
+}
+module.exports = { getArts, addArt, editArt, deleteArt, getAdmin };

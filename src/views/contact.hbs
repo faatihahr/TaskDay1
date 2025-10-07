@@ -27,15 +27,22 @@
                         <li class="nav-item">
                             <a class="nav-link custom-nav-link px-4 py-2 rounded-2 active" {{#if (eq activePage 'home')}}active{{/if}} href="/home" id="home-link">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link custom-nav-link px-4 py-2 rounded-2" {{#if (eq activePage 'my-projects')}}active{{/if}} href="/my-projects" id="projects-link">My Projects</a>
-                        </li>
+                        {{#if isAdmin}}
+                          <li class="nav-item">
+                            <a class="nav-link custom-nav-link px-4 py-2 rounded-2 {{#if (eq activePage 'my-projects')}}active{{/if}}" href="/my-projects" id="projects-link">My Projects</a>
+                          </li>
+                        {{/if}}
                         <li class="nav-item">
                              <a class="nav-link custom-nav-link px-4 py-2 rounded-2" {{#if (eq activePage 'contact')}}active{{/if}} href="/contact" id="contact-link">Contact</a>
                         </li>
                         <li class="nav-item">
                              <a class="nav-link custom-nav-link px-4 py-2 rounded-2 " {{#if (eq activePage 'profile')}}active{{/if}} href="/profile" id="profile-link">Profile</a>
                         </li>
+                        {{#if isAdmin}}
+                          <li class="nav-item">
+                            <a class="nav-link custom-nav-link px-4 py-2 rounded-2 {{#if (eq activePage 'my-projects')}}active{{/if}}" href="/logout" id="projects-link">Logout</a>
+                          </li>
+                        {{/if}}
                     </ul>
                 </div>
             </div>
