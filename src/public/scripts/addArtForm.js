@@ -19,30 +19,25 @@ export function setupAddArtForm() {
     const description = document.getElementById('art-description').value.trim();
 
     if (title && imageInput.files[0] && description) {
-      const reader = new FileReader();
-      reader.onload = event => {
-        // Kirim data ke server
-        fetch('/add-art', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title,
-            description,
-            image: event.target.result // base64 image
-          })
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('image', imageInput.files[0]);
+
+      fetch('/add-art', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => {
+          if (res.ok) {
+            console.log('Art added successfully');
+            window.location.href = '/home'; // redirect ke home untuk melihat data baru
+          } else {
+            console.error('Failed to add art');
+          }
         })
-          .then(res => {
-            if (res.ok) {
-              console.log('Art added successfully');
-              window.location.href = '/home'; // redirect ke home untuk melihat data baru
-            } else {
-              console.error('Failed to add art');
-            }
-          })
-          .catch(err => console.error('Error:', err));
-      };
-      reader.readAsDataURL(imageInput.files[0]); // konversi gambar ke base64
-    } else {
+        .catch(err => console.error('Error:', err));
+        } else {
       console.warn('Invalid input: some fields are empty');
     }
   });

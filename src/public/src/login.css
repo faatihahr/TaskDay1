@@ -6,7 +6,6 @@ body {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: "Caprasimo", serif;
     }
 
     main {
@@ -24,3 +23,74 @@ body {
       margin-bottom: 1rem;
       font-weight: bold;
     }
+    
+body.modal-active main,
+body.modal-active header,
+body.modal-active footer {
+  filter: blur(5px);
+  transition: filter 0.3s ease-in-out;
+  pointer-events: none; 
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  backdrop-filter: blur(2px); 
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 32px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  animation: slideUp 0.3s ease-in-out;
+  min-width: 280px;
+  max-width: 400px;
+}
+
+.modal-box.error {
+  border-left: 6px solid #ff4d4d;
+}
+
+.modal-box.success {
+  border-left: 6px solid #2ecc71;
+}
+
+.modal-box p {
+  margin: 0 0 15px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.close-btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.close-btn:hover {
+  background-color: #555;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
