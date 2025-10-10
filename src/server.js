@@ -90,19 +90,16 @@ app.post('/register', checkUsernameExists, async (req, res) => {
   try {
     await getRegist({ username, password });
     console.log('Registrasi berhasil untuk user:', username);
-    const result = await pool.query('SELECT id, username, password_hash FROM admin ORDER BY id DESC');
+    const result = await pool.query('SELECT id, username, password_hash FROM admins ORDER BY id DESC');
     console.log('Data admin terkini di database:');
-    result.rows.forEach((admin, index) => {
-      console.log(`  ${index + 1}. ID: ${admin.id}, Username: ${admin.username}, Hash: ${admin.password_hash}`);
+    result.rows.forEach((admins, index) => {
+      console.log(`  ${index + 1}. ID: ${admins.id}, Username: ${admins.username}, Hash: ${admins.password_hash}`);
     });
     res.render('register', { 
       title: 'Register - Digital Art Portfolio', 
-      success: 'Akun anda berhasil dibuat! Anda akan diarahkan ke halaman login...',
+      success: 'Akun anda berhasil dibuat! Silahkan masuk kembali di halaman login',
       activePage: 'register'
     });
-    setTimeout(() => {
-      res.redirect('/admin-login');
-    }, 3000);
   } catch (err) {
     console.error('Error saat register:', err);
     res.status(500).send('Internal Server Error');

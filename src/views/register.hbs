@@ -33,17 +33,25 @@
 <div class="modal-overlay" id="alertModal">
   <div class="modal-box error">
     <p>{{error}}</p>
-    <button class="close-btn" onclick="closeModal()">Tutup</button>
+    <button class="close-btn" onclick="closeModal()">&times; Tutup</button>
   </div>
 </div>
 {{else if success}}
 <div class="modal-overlay" id="alertModal">
   <div class="modal-box success">
     <p>{{success}}</p>
-    <button class="close-btn" onclick="closeModal()">Tutup</button>
+    <button class="close-btn" onclick="closeModal()">&times;Tutup</button>
   </div>
 </div>
 {{/if}}
+{{#if redirect}}
+<script>
+  setTimeout(() => {
+    window.location.href = '/admin-login';
+  }, 3000);
+</script>
+{{/if}}
 <script type="module" src="/scripts/alertModal.js"></script>
+
 </body>
 </html>
