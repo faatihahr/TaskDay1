@@ -32,7 +32,7 @@
         <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
           <ul class="navbar-nav gap-2">
             <li class="nav-item">
-              <a class="nav-link custom-nav-link px-4 py-2 rounded-2 active" href="/home">Home</a>
+              <a class="nav-link custom-nav-link px-4 py-2 rounded-2 {{#if (eq activePage 'home')}}active{{/if}}" href="/home">Home</a>
             </li>
             {{#if isAdmin}}
               <li class="nav-item">
@@ -40,10 +40,10 @@
               </li>
             {{/if}}
             <li class="nav-item">
-              <a class="nav-link custom-nav-link px-4 py-2 rounded-2" href="/contact" id="contact-link">Contact</a>
+              <a class="nav-link custom-nav-link px-4 py-2 rounded-2 {{#if (eq activePage 'contact')}}active{{/if}}" href="/contact" id="contact-link">Contact</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link custom-nav-link px-4 py-2 rounded-2" href="/profile" id="profile-link">Profile</a>
+              <a class="nav-link custom-nav-link px-4 py-2 rounded-2 {{#if (eq activePage 'profile')}}active{{/if}}" href="/profile" id="profile-link">Profile</a>
             </li>
             {{#if isAdmin}}
               <li class="nav-item">
