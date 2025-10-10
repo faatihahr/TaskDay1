@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
   }
 });
 
-// Filter tipe file (opsional)
+// Filter tipe file 
 function fileFilter(req, file, cb) {
   const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
   if (allowedTypes.includes(file.mimetype)) {
